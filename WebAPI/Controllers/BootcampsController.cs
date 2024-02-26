@@ -17,33 +17,34 @@ namespace WebAPI.Controllers
             _bootcampService = bootcampService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            return HandleDataResult(await _bootcampService.GetAllAsync());
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(int id)
-        {
-            return HandleDataResult(await _bootcampService.GetByIdAsync(id));
-        }
-
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> AddAsync(CreateBootcampRequest request)
         {
             return HandleDataResult(await _bootcampService.AddAsync(request));
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(DeleteBootcampRequest request)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            return HandleDataResult(await _bootcampService.DeleteAsync(request));
+            return HandleDataResult(await _bootcampService.DeleteAsync(new DeleteBootcampRequest { Id = id }));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync(UpdateBootcampRequest request)
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllAsync()
         {
+            return HandleDataResult(await _bootcampService.GetAllAsync());
+        }
+
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetByIdAsync(int id)
+        {
+            return HandleDataResult(await _bootcampService.GetByIdAsync(new GetByIdBootcampRequest { Id = id }));
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, UpdateBootcampRequest request)
+        {
+            request.Id = id;
             return HandleDataResult(await _bootcampService.UpdateAsync(request));
         }
     }

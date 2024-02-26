@@ -13,38 +13,39 @@ namespace WebAPI.Controllers
     {
         private readonly IApplicationStateService _applicationStateService;
 
-        public ApplicationStateStatesController(IApplicationStateService applicationStateStateService)
+        public ApplicationStatesController(IApplicationStateService applicationStateService)
         {
-            _applicationStateService = applicationStateStateService;
+            _applicationStateService = applicationStateService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            return HandleDataResult(await _applicationStateService.GetAllAsync());
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(int id)
-        {
-            return HandleDataResult(await _applicationStateService.GetByIdAsync(id));
-        }
-
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> AddAsync(CreateApplicationStateRequest request)
         {
             return HandleDataResult(await _applicationStateService.AddAsync(request));
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(DeleteApplicationStateRequest request)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            return HandleDataResult(await _applicationStateService.DeleteAsync(request));
+            return HandleDataResult(await _applicationStateService.DeleteAsync(new DeleteApplicationStateRequest { Id = id }));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync(UpdateApplicationStateRequest request)
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
         {
+            return HandleDataResult(await _applicationStateService.GetAllAsync());
+        }
+
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetByIdAsync(int id)
+        {
+            return HandleDataResult(await _applicationStateService.GetByIdAsync(new GetByIdApplicationStateRequest { Id = id }));
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, UpdateApplicationStateRequest request)
+        {
+            request.Id = id;
             return HandleDataResult(await _applicationStateService.UpdateAsync(request));
         }
     }

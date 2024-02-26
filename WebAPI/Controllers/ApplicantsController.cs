@@ -17,34 +17,40 @@ namespace WebAPI.Controllers
             _applicantService = applicantService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        [HttpPost("Add")]
+        public IActionResult Add(AddApplicantRequest request)
         {
-            return HandleDataResult(await _applicantService.GetAllAsync());
+            var result = _applicantService.Add(request);
+            return HandleDataResult(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        [HttpDelete("Delete/{id}")]
+        public IActionResult Delete(int id)
         {
-            return HandleDataResult(await _applicantService.GetByIdAsync(id));
+            var result = _applicantService.Delete(new DeleteApplicantRequest { Id = id });
+            return HandleDataResult(result);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddAsync(CreateApplicantRequest request)
+        [HttpGet("GetAll")]
+        public IActionResult GetAll()
         {
-            return HandleDataResult(await _applicantService.AddAsync(request));
+            var result = _applicantService.GetAll();
+            return HandleDataResult(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(DeleteApplicantRequest request)
+        [HttpGet("GetById/{id}")]
+        public IActionResult GetById(int id)
         {
-            return HandleDataResult(await _applicantService.DeleteAsync(request));
+            var result = _applicantService.GetById(new GetApplicantByIdRequest { Id = id });
+            return HandleDataResult(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync(UpdateApplicantRequest request)
+        [HttpPut("Update/{id}")]
+        public IActionResult Update(int id, UpdateApplicantRequest request)
         {
-            return HandleDataResult(await _applicantService.UpdateAsync(request));
+            request.Id = id;
+            var result = _applicantService.Update(request);
+            return HandleDataResult(result);
         }
     }
 }

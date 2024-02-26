@@ -17,34 +17,40 @@ namespace WebAPI.Controllers
             _instructorService = instructorService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        [HttpPost("Add")]
+        public IActionResult Add(CreateInstructorRequest request)
         {
-            return HandleDataResult(await _instructorService.GetAllAsync());
+            var result = _instructorService.Add(request);
+            return HandleDataResult(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        [HttpDelete("Delete/{id}")]
+        public IActionResult Delete(int id)
         {
-            return HandleDataResult(await _instructorService.GetByIdAsync(id));
+            var result = _instructorService.DeleteAsync(new DeleteInstructorRequest { Id = id });
+            return HandleDataResult(result);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddAsync(CreateInstructorRequest request)
+        [HttpGet("GetAll")]
+        public IActionResult GetAll()
         {
-            return HandleDataResult(await _instructorService.AddAsync(request));
+            var result = _instructorService.GetAll();
+            return HandleDataResult(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(DeleteInstructorRequest request)
+        [HttpGet("GetById/{id}")]
+        public IActionResult GetById(int id)
         {
-            return HandleDataResult(await _instructorService.DeleteAsync(request));
+            var result = _instructorService.GetByIdAsync(new GetInstructorByIdRequest { Id = id });
+            return HandleDataResult(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync(UpdateInstructorRequest request)
+        [HttpPut("Update/{id}")]
+        public IActionResult Update(int id, UpdateInstructorRequest request)
         {
-            return HandleDataResult(await _instructorService.UpdateAsync(request));
+            request.Id = id;
+            var result = _instructorService.Update(request);
+            return HandleDataResult(result);
         }
     }
 }

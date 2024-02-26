@@ -17,34 +17,40 @@ namespace WebAPI.Controllers
             _employeeService = employeeService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        [HttpPost("Add")]
+        public IActionResult Add(AddEmployeeRequest request)
         {
-            return HandleDataResult(await _employeeService.GetAllAsync());
+            var result = _employeeService.Add(request);
+            return HandleDataResult(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        [HttpDelete("Delete/{id}")]
+        public IActionResult Delete(int id)
         {
-            return HandleDataResult(await _employeeService.GetByIdAsync(id));
+            var result = _employeeService.Delete(new DeleteEmployeeRequest { Id = id });
+            return HandleDataResult(result);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddAsync(CreateEmployeeRequest request)
+        [HttpGet("GetAll")]
+        public IActionResult GetAll()
         {
-            return HandleDataResult(await _employeeService.AddAsync(request));
+            var result = _employeeService.GetAll();
+            return HandleDataResult(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(DeleteEmployeeRequest request)
+        [HttpGet("GetById/{id}")]
+        public IActionResult GetById(int id)
         {
-            return HandleDataResult(await _employeeService.DeleteAsync(request));
+            var result = _employeeService.GetById(new GetEmployeeByIdRequest { Id = id });
+            return HandleDataResult(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync(UpdateEmployeeRequest request)
+        [HttpPut("Update/{id}")]
+        public IActionResult Update(int id, UpdateEmployeeRequest request)
         {
-            return HandleDataResult(await _employeeService.UpdateAsync(request));
+            request.Id = id;
+            var result = _employeeService.Update(request);
+            return HandleDataResult(result);
         }
     }
 }
