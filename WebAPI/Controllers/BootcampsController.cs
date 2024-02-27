@@ -1,10 +1,8 @@
 ﻿using Business.Abstracts;
 using Business.Requests.Bootcamps;
-using Business.Responses.Bootcamps;
-using Core.Utilities.Results;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPI.Controllers
+namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

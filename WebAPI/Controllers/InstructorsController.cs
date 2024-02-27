@@ -1,10 +1,10 @@
-﻿using Business.Abstracts;
+﻿using AutoMapper;
+using Business.Abstracts;
 using Business.Requests.Instructors;
-using Business.Responses.Instructors;
-using Core.Utilities.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPI.Controllers
+namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
         [HttpDelete("Delete/{id}")]
         public IActionResult Delete(int id)
         {
-            var result = _instructorService.DeleteAsync(new DeleteInstructorRequest { Id = id });
+            var result = _instructorService.Delete(new DeleteInstructorRequest { Id = id });
             return HandleDataResult(result);
         }
 
@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         [HttpGet("GetById/{id}")]
         public IActionResult GetById(int id)
         {
-            var result = _instructorService.GetByIdAsync(new GetInstructorByIdRequest { Id = id });
+            var result = _instructorService.GetById(new GetInstructorByIdRequest { Id = id });
             return HandleDataResult(result);
         }
 

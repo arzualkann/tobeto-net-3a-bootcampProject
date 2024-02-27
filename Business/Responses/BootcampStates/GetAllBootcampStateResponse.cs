@@ -2,6 +2,7 @@
 {
     public class GetAllBootcampStateResponse
     {
-        public string Name { get; set; }
+        public int Id { get; set; }
+        public int Name { get; set; }
     }
 }

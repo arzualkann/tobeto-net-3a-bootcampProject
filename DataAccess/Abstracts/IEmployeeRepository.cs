@@ -1,9 +1,14 @@
 ﻿using Core.DataAccess;
 using Entities.Concretes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess.Abstracts
 {
-    public interface IEmployeeRepository : IAsyncRepository<Employee, int>, IRepository<Employee, int>
+    public interface IEmployeeRepository : IRepository<Employee, int>
     {
     }
 }

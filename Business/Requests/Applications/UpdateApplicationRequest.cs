@@ -1,4 +1,5 @@
-﻿namespace Business.Requests.Applications
+﻿
+namespace Business.Requests.Applications
 {
     public class UpdateApplicationRequest
     {
@@ -7,4 +8,5 @@
         public int BootcampId { get; set; }
         public int ApplicationStateId { get; set; }
     }
+
 }

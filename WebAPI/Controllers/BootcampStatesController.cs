@@ -1,11 +1,8 @@
 ﻿using Business.Abstracts;
 using Business.Requests.BootcampStates;
-using Business.Responses.BootcampStates;
-using Core.Utilities.Results;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPI.Controllers
+namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -49,5 +46,4 @@ namespace WebAPI.Controllers
             return HandleDataResult(await _bootcampStateService.UpdateAsync(request));
         }
     }
-
 }

@@ -1,16 +1,26 @@
 ﻿using Entities.Concretes;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess.Concretes.EntityFramework.EntityTypeConfigurations
 {
-    public class ApplicationStateConfiguration
+    public class ApplicationStateConfiguration : IEntityTypeConfiguration<ApplicationState>
     {
-        public void Configure(EntityTypeBuilder<ApplicationState> builder)
+        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<ApplicationState> builder)
         {
-            builder.ToTable("ApplicationStates").HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasColumnName("Id").IsRequired();
-            builder.Property(x => x.Name).HasColumnName("Name").IsRequired();
+            builder.ToTable("ApplicationStates").HasKey(u => u.Id);
+            builder.Property(x => x.Id).IsRequired().HasColumnName("Id");
+            builder.Property(x => x.Name).IsRequired().HasColumnName("Name");
+            builder.Property(x => x.CreatedDate).HasColumnName("CreatedDate");
+            builder.Property(x => x.UpdatedDate).HasColumnName("UpdatedDate");
+            builder.Property(x => x.DeletedDate).HasColumnName("DeletedDate");
+
+
+            builder.HasOne(x => x.Application); //one to one
         }
     }
 }

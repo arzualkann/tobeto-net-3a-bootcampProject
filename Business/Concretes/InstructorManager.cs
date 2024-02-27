@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
+using Azure;
 using Business.Abstracts;
 using Business.Requests.Instructors;
+using Business.Responses.Employees;
 using Business.Responses.Instructors;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
-using DataAccess.Repositories;
 using Entities.Concretes;
+
 
 namespace Business.Concretes
 {
@@ -19,43 +21,80 @@ namespace Business.Concretes
             _instructorRepository = instructorRepository;
             _mapper = mapper;
         }
-        public async Task<IDataResult<List<GetAllInstructorResponse>>> GetAllAsync()
-        {
-            List<Instructor> instructors = await _instructorRepository.GetAllAsync();
-            List<GetAllInstructorResponse> reponses = _mapper.Map<List<GetAllInstructorResponse>>(instructors);
-            return new SuccessDataResult<List<GetAllInstructorResponse>>(reponses, "Başarıyla listelendi");
-        }
 
-        public async Task<IDataResult<GetByIdInstructorResponse>> GetByIdAsync(int id)
-        {
-            Instructor instructor = await _instructorRepository.GetAsync(x => x.Id == id);
-            GetByIdInstructorResponse response = _mapper.Map<GetByIdInstructorResponse>(instructor);
-            return new SuccessDataResult<GetByIdInstructorResponse>(response);
-        }
-
-        public async Task<IDataResult<CreateInstructorResponse>> AddAsync(CreateInstructorRequest request)
+        public IDataResult<CreateInstructorResponse> Add(CreateInstructorRequest request)
         {
             Instructor instructor = _mapper.Map<Instructor>(request);
-            await _instructorRepository.AddAsync(instructor);
-            CreateInstructorResponse response = _mapper.Map<CreateInstructorResponse>(instructor);
-            return new SuccessDataResult<CreateInstructorResponse>(response, "Başarıyla eklendi");
+
+            _instructorRepository.Add(instructor);
+
+            CreateInstructorResponse response = _mapper.Map<CreateInstructorResponse>(request);
+
+            return new SuccessDataResult<CreateInstructorResponse>(response, "Added Successfully.");
         }
 
-        public async Task<IDataResult<DeleteInstructorResponse>> DeleteAsync(DeleteInstructorRequest request)
+        public IDataResult<DeleteInstructorResponse> Delete(DeleteInstructorRequest request)
         {
-            Instructor instructor = await _instructorRepository.GetAsync(x => x.Id == request.UserId);
-            await _instructorRepository.DeleteAsync(instructor);
-            DeleteInstructorResponse response = _mapper.Map<DeleteInstructorResponse>(instructor);
-            return new SuccessDataResult<DeleteInstructorResponse>(response, "Başarıyla silindi");
+            Instructor deleteToInstructor = _instructorRepository.GetById(predicate: instructor => instructor.Id == request.Id);
+
+            if (deleteToInstructor != null)
+            {
+                var deletedInstructor = _instructorRepository.Delete(deleteToInstructor);
+
+                var response = new DeleteInstructorResponse { DeletedTime = deletedInstructor.DeletedDate, UserName = deletedInstructor.UserName, Id = deletedInstructor.Id };
+
+                return new SuccessDataResult<DeleteInstructorResponse>(response, "Deleted Successfully.");
+            }
+            else
+            {
+                return new ErrorDataResult<DeleteInstructorResponse>("Instructor not found");
+            }
         }
 
-        public async Task<IDataResult<UpdateInstructorResponse>> UpdateAsync(UpdateInstructorRequest request)
+        public IDataResult<List<GetAllInstructorResponse>> GetAll()
         {
-            Instructor instructor = await _instructorRepository.GetAsync(x => x.Id == request.UserId);
-            _mapper.Map(request, instructor);
-            await _instructorRepository.UpdateAsync(instructor);
-            UpdateInstructorResponse response = _mapper.Map<UpdateInstructorResponse>(instructor);
-            return new SuccessDataResult<UpdateInstructorResponse>(response, "Başarıyla güncellendi");
+            List<Instructor> instructors = _instructorRepository.GetAll();
+
+            var responses = _mapper.Map<List<GetAllInstructorResponse>>(instructors);
+
+            return new SuccessDataResult<List<GetAllInstructorResponse>>(responses, "Listed Successfully.");
+        }
+
+        public IDataResult<GetInstructorByIdResponse> GetById(GetInstructorByIdRequest request)
+        {
+            Instructor instructor = _instructorRepository.GetById(predicate: instructor => instructor.Id == request.Id);
+
+            if (instructor != null)
+            {
+                GetInstructorByIdResponse response = _mapper.Map<GetInstructorByIdResponse>(instructor);
+
+                return new SuccessDataResult<GetInstructorByIdResponse>(response, "Showed Successfully.");
+            }
+            else
+            {
+                return new ErrorDataResult<GetInstructorByIdResponse>("Instructor not found");
+            }
+        }
+
+        public IDataResult<UpdateInstructorResponse> Update(UpdateInstructorRequest request)
+        {
+            Instructor updateToInstructor = _instructorRepository.GetById(predicate: instructor => instructor.Id == request.Id);
+
+            if (updateToInstructor != null)
+            {
+                _mapper.Map(request, updateToInstructor);
+
+                _instructorRepository.Update(updateToInstructor);
+
+                var response = _mapper.Map<UpdateInstructorResponse>(updateToInstructor);
+
+                return new SuccessDataResult<UpdateInstructorResponse>(response, "Updated Successfully");
+            }
+            else
+            {
+                // Handle Instructor not found error
+                return new ErrorDataResult<UpdateInstructorResponse>("Instructor not found");
+            }
         }
     }
 }

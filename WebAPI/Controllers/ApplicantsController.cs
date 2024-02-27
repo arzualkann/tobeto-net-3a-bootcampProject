@@ -1,10 +1,8 @@
 ﻿using Business.Abstracts;
 using Business.Requests.Applicants;
-using Business.Responses.Applicants;
-using Core.Utilities.Results;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPI.Controllers
+namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -52,5 +50,6 @@ namespace WebAPI.Controllers
             var result = _applicantService.Update(request);
             return HandleDataResult(result);
         }
+
     }
 }

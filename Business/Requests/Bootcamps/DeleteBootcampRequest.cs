@@ -3,5 +3,6 @@
     public class DeleteBootcampRequest
     {
         public int Id { get; set; }
+
     }
 }

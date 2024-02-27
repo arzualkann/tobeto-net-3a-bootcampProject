@@ -17,7 +17,7 @@ public class BlackListConfigurations : IEntityTypeConfiguration<BlackList>
         builder.Property(x => x.Id).HasColumnName("Id");
         builder.Property(x => x.Reason).IsRequired().HasColumnName("Reason");
         builder.Property(x => x.Date).HasColumnName("Date");
-        builder.Property(x => x.Applicant_id).IsRequired().HasColumnName("Applicant_id");
+        builder.Property(x => x.ApplicantId).IsRequired().HasColumnName("Applicant_id");
 
         builder.HasOne(x => x.Applicant);
     }

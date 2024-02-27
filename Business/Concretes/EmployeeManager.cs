@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Azure;
 using Business.Abstracts;
 using Business.Requests.Employees;
+using Business.Responses.Applicants;
 using Business.Responses.Employees;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
@@ -19,43 +21,78 @@ namespace Business.Concretes
             _mapper = mapper;
         }
 
-        public async Task<IDataResult<List<GetAllEmployeeResponse>>> GetAllAsync()
-        {
-            List<Employee> employees = await _employeeRepository.GetAllAsync();
-            List<GetAllEmployeeResponse> responses = _mapper.Map<List<GetAllEmployeeResponse>>(employees);
-            return new SuccessDataResult<List<GetAllEmployeeResponse>>(responses, "Başarıyla listelendi");
-        }
-
-        public async Task<IDataResult<GetByIdEmployeeResponse>> GetByIdAsync(int id)
-        {
-            Employee employee = await _employeeRepository.GetAsync(x => x.Id == id);
-            GetByIdEmployeeResponse response = _mapper.Map<GetByIdEmployeeResponse>(employee);
-            return new SuccessDataResult<GetByIdEmployeeResponse>(response);
-        }
-
-        public async Task<IDataResult<CreateEmployeeResponse>> AddAsync(CreateEmployeeRequest request)
+        public IDataResult<AddEmployeeResponse> Add(AddEmployeeRequest request)
         {
             Employee employee = _mapper.Map<Employee>(request);
-            await _employeeRepository.AddAsync(employee);
-            CreateEmployeeResponse response = _mapper.Map<CreateEmployeeResponse>(employee);
-            return new SuccessDataResult<CreateEmployeeResponse>(response, "Başarıyla eklendi");
+
+            _employeeRepository.Add(employee);
+
+            AddEmployeeResponse response = _mapper.Map<AddEmployeeResponse>(employee);
+
+            return new SuccessDataResult<AddEmployeeResponse>(response, "Added Successfully.");
         }
 
-        public async Task<IDataResult<DeleteEmployeeResponse>> DeleteAsync(DeleteEmployeeRequest request)
+        public IDataResult<DeleteEmployeeResponse> Delete(DeleteEmployeeRequest request)
         {
-            Employee employee = await _employeeRepository.GetAsync(x => x.Id == request.UserId);
-            await _employeeRepository.DeleteAsync(employee);
-            DeleteEmployeeResponse response = _mapper.Map<DeleteEmployeeResponse>(employee);
-            return new SuccessDataResult<DeleteEmployeeResponse>(response, "Başarıyla silindi");
+            Employee deleteToEmployee = _employeeRepository.GetById(predicate: employee => employee.Id == request.Id);
+
+            if (deleteToEmployee != null)
+            {
+                var deletedEmployee = _employeeRepository.Delete(deleteToEmployee);
+
+                var response = _mapper.Map<DeleteEmployeeResponse>(deletedEmployee);
+
+                return new SuccessDataResult<DeleteEmployeeResponse>(response, "Deleted Successfully.");
+            }
+            else
+            {
+                return new ErrorDataResult<DeleteEmployeeResponse>("Employee not found");
+            }
         }
 
-        public async Task<IDataResult<UpdateEmployeeResponse>> UpdateAsync(UpdateEmployeeRequest request)
+        public IDataResult<List<GetAllEmployeeResponse>> GetAll()
         {
-            Employee employee = await _employeeRepository.GetAsync(x => x.Id == request.UserId);
-            _mapper.Map(request, employee);
-            await _employeeRepository.UpdateAsync(employee);
-            UpdateEmployeeResponse response = _mapper.Map<UpdateEmployeeResponse>(employee);
-            return new SuccessDataResult<UpdateEmployeeResponse>(response, "Başarıyla güncellendi");
+            List<Employee> employees = _employeeRepository.GetAll();
+
+            List<GetAllEmployeeResponse> responses = _mapper.Map<List<GetAllEmployeeResponse>>(employees);
+
+            return new SuccessDataResult<List<GetAllEmployeeResponse>>(responses, "Listed Successfully.");
+        }
+
+        public IDataResult<GetEmployeeByIdResponse> GetById(GetEmployeeByIdRequest request)
+        {
+            Employee employee = _employeeRepository.GetById(predicate: employee => employee.Id == request.Id);
+
+            if (employee != null)
+            {
+                GetEmployeeByIdResponse response = _mapper.Map<GetEmployeeByIdResponse>(employee);
+
+                return new SuccessDataResult<GetEmployeeByIdResponse>(response,"Showed Successfully.");
+            }
+            else
+            {
+                return new ErrorDataResult<GetEmployeeByIdResponse>("Employee not found");
+            }
+        }
+
+        public IDataResult<UpdateEmployeeResponse> Update(UpdateEmployeeRequest request)
+        {
+            Employee updateToEmployee = _employeeRepository.GetById(predicate: employee => employee.Id == request.Id);
+
+            if (updateToEmployee != null)
+            {
+                _mapper.Map(request, updateToEmployee);
+
+                _employeeRepository.Update(updateToEmployee);
+
+                var response = _mapper.Map<UpdateEmployeeResponse>(updateToEmployee);
+
+                return new SuccessDataResult<UpdateEmployeeResponse>(response, "Updated Successfully");
+            }
+            else
+            {
+                return new ErrorDataResult<UpdateEmployeeResponse>("Employee not found");
+            }
         }
     }
 }

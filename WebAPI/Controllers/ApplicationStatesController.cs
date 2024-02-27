@@ -1,15 +1,12 @@
 ﻿using Business.Abstracts;
 using Business.Requests.ApplicationStates;
-using Business.Responses.ApplicationStates;
-using Core.Utilities.Results;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPI.Controllers
+namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApplicationStateStatesController : BaseController
+    public class ApplicationStatesController : BaseController
     {
         private readonly IApplicationStateService _applicationStateService;
 
@@ -49,5 +46,4 @@ namespace WebAPI.Controllers
             return HandleDataResult(await _applicationStateService.UpdateAsync(request));
         }
     }
-
 }

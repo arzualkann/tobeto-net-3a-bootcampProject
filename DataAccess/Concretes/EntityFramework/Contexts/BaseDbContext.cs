@@ -1,7 +1,13 @@
 ﻿using Entities.Concretes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess.Concretes.EntityFramework.Contexts
 {
@@ -13,11 +19,13 @@ namespace DataAccess.Concretes.EntityFramework.Contexts
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<ApplicationState> ApplicationStates { get; set; }
         public DbSet<Bootcamp> Bootcamps { get; set; }
         public DbSet<BootcampState> BootcampStates { get; set; }
-        public DbSet<ApplicationState> ApplicationStates { get; set; }
+        public DbSet<BlackList> BlackLists { get; set; }
 
-        public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration) : base(dbContextOptions)
+        public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration)
+            : base(dbContextOptions)
         {
             Configuration = configuration;
         }
@@ -25,7 +33,8 @@ namespace DataAccess.Concretes.EntityFramework.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().
+                 SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }

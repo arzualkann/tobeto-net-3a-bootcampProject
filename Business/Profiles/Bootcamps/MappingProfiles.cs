@@ -10,14 +10,13 @@ namespace Business.Profiles.Bootcamps
         public MappingProfiles()
         {
             CreateMap<Bootcamp, CreateBootcampRequest>().ReverseMap();
-            CreateMap<Bootcamp, DeleteBootcampRequest>().ReverseMap();
-            CreateMap<Bootcamp, UpdateBootcampRequest>().ReverseMap();
-
             CreateMap<Bootcamp, CreateBootcampResponse>().ReverseMap();
-            CreateMap<Bootcamp, DeleteBootcampResponse>().ReverseMap();
+
+            CreateMap<Bootcamp, UpdateBootcampRequest>().ReverseMap();
             CreateMap<Bootcamp, UpdateBootcampResponse>().ReverseMap();
-            CreateMap<Bootcamp, GetAllBootcampResponse>().ReverseMap();
+
             CreateMap<Bootcamp, GetByIdBootcampResponse>().ReverseMap();
+            CreateMap<Bootcamp, GetAllBootcampResponse>().ReverseMap();
         }
     }
 }

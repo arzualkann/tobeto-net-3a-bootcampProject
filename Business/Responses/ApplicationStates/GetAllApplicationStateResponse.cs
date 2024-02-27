@@ -2,6 +2,8 @@
 {
     public class GetAllApplicationStateResponse
     {
-        public string Name { get; set; }
+        public int Id { get; set; }
+        public int Name { get; set; }
+        public int ApplicationId { get; set; }
     }
 }

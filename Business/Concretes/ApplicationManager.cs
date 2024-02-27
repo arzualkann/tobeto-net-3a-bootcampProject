@@ -23,41 +23,74 @@ namespace Business.Concretes
         public async Task<IDataResult<CreateApplicationResponse>> AddAsync(CreateApplicationRequest request)
         {
             Application application = _mapper.Map<Application>(request);
+            
             await _applicationRepository.AddAsync(application);
 
             CreateApplicationResponse response = _mapper.Map<CreateApplicationResponse>(application);
-            return new SuccessDataResult<CreateApplicationResponse>(response, "Başvuru ekleme başarılı.");
+            
+            return new SuccessDataResult<CreateApplicationResponse>(response, "Added Successfully");
         }
 
         public async Task<IDataResult<DeleteApplicationResponse>> DeleteAsync(DeleteApplicationRequest request)
         {
-            Application application = _applicationRepository.Get(x => x.Id == request.Id);
+            var application = await _applicationRepository.GetByIdAsync(predicate: application => application.Id == request.Id);
+            
+            if (application == null)
+            {
+                return new ErrorDataResult<DeleteApplicationResponse>("Application not found");
+            }
+
             await _applicationRepository.DeleteAsync(application);
-            DeleteApplicationResponse response = _mapper.Map<DeleteApplicationResponse>(application);
-            return new SuccessDataResult<DeleteApplicationResponse>(response, "Başvuru silme başarılı.");
+
+            var response = _mapper.Map<DeleteApplicationResponse>(application);
+            
+            return new SuccessDataResult<DeleteApplicationResponse>(response, "Deleted Successfully");
         }
 
         public async Task<IDataResult<List<GetAllApplicationResponse>>> GetAllAsync()
         {
-            List<Application> applications = await _applicationRepository.GetAllAsync(include: x => x.Include(x => x.Applicant).Include(x => x.Bootcamp).Include(x => x.ApplicationState));
+            List<Application> applications = await _applicationRepository.GetAllAsync(include: x => x.Include(x => x.Bootcamp.Name).Include(x => x.Applicant.UserName));
+            
             List<GetAllApplicationResponse> responses = _mapper.Map<List<GetAllApplicationResponse>>(applications);
-            return new SuccessDataResult<List<GetAllApplicationResponse>>(responses, "Listeleme başarılı");
+            
+            return new SuccessDataResult<List<GetAllApplicationResponse>>(responses, "Listed Successfully");
         }
 
-        public async Task<IDataResult<GetByIdApplicationResponse>> GetByIdAsync(int id)
+        public async Task<IDataResult<GetByIdApplicationResponse>> GetByIdAsync(GetByIdApplicationRequest request)
         {
-            Application application = await _applicationRepository.GetAsync(x => x.Id == id, include: x => x.Include(x => x.Applicant).Include(x => x.Bootcamp).Include(x => x.ApplicationState));
-            GetByIdApplicationResponse response = _mapper.Map<GetByIdApplicationResponse>(application);
-            return new SuccessDataResult<GetByIdApplicationResponse>(response);
+            var application = await _applicationRepository.GetByIdAsync(predicate: application => application.Id == request.Id);
+
+            if (application == null)
+            {
+                return new ErrorDataResult<GetByIdApplicationResponse>("Application not found");
+            }
+
+            await _applicationRepository.DeleteAsync(application);
+
+            var response = _mapper.Map<GetByIdApplicationResponse>(application);
+
+            return new SuccessDataResult<GetByIdApplicationResponse>(response, "Showed Successfully");
         }
 
         public async Task<IDataResult<UpdateApplicationResponse>> UpdateAsync(UpdateApplicationRequest request)
         {
-            Application application = await _applicationRepository.GetAsync(x => x.Id == request.Id);
-            _mapper.Map(request, application);
+            var application = await _applicationRepository.GetByIdAsync(predicate: application => application.Id == request.Id);
+
+            if (application == null)
+            {
+                return new ErrorDataResult<UpdateApplicationResponse>("Application not found");
+            }
+
+            _mapper.Map(request, application); // Burada application nesnesinin verileri request nesnesindeki veriler ile güncelleniyor.
+
+            // application = _mapper.Map<Application>(request); şeklinde yazsaydık request nesnesinin verileriyle Application
+            // türünde yeni bir nesne oluşturulacaktı. Biz yeni nesne oluşturmak değil olanı güncellemek istiyoruz.
+
             await _applicationRepository.UpdateAsync(application);
-            UpdateApplicationResponse response = _mapper.Map<UpdateApplicationResponse>(application);
-            return new SuccessDataResult<UpdateApplicationResponse>(response, "Güncelleme başarılı");
+
+            var response = _mapper.Map<UpdateApplicationResponse>(application);
+
+            return new SuccessDataResult<UpdateApplicationResponse>(response, "Updated Successfully");
         }
     }
 }

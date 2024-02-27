@@ -1,57 +1,49 @@
 ﻿using Business.Abstracts;
-using Business.Requests.Applicants;
 using Business.Requests.Applications;
-using Business.Responses.Applications;
-using Core.Utilities.Results;
 using Microsoft.AspNetCore.Mvc;
-namespace WebAPI.Controllers
+
+namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ApplicationsController : BaseController
     {
-        private readonly IApplicantService _applicantService;
+        private readonly IApplicationService _applicationService;
 
-        public ApplicantsController(IApplicantService applicantService)
+        public ApplicationsController(IApplicationService applicationService)
         {
-            _applicantService = applicantService;
+            _applicationService = applicationService;
         }
 
-        [HttpPost("Create")]
-        public IActionResult Add(CreateApplicantRequest request)
+        [HttpPost("Add")]
+        public async Task<IActionResult> AddAsync(CreateApplicationRequest request)
         {
-            var result = _applicantService.Add(request);
-            return HandleDataResult(result);
+            return HandleDataResult(await _applicationService.AddAsync(request));
         }
 
         [HttpDelete("Delete/{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = _applicantService.Delete(new DeleteApplicantRequest { Id = id });
-            return HandleDataResult(result);
+            return HandleDataResult(await _applicationService.DeleteAsync(new DeleteApplicationRequest { Id = id }));
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var result = _applicantService.GetAll();
-            return HandleDataResult(result);
+            return HandleDataResult(await _applicationService.GetAllAsync());
         }
 
         [HttpGet("GetById/{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var result = _applicantService.GetById(new GetApplicantByIdRequest { Id = id });
-            return HandleDataResult(result);
+            return HandleDataResult(await _applicationService.GetByIdAsync(new GetByIdApplicationRequest { Id = id }));
         }
 
         [HttpPut("Update/{id}")]
-        public IActionResult Update(int id, UpdateApplicantRequest request)
+        public async Task<IActionResult> UpdateAsync(int id, UpdateApplicationRequest request)
         {
             request.Id = id;
-            var result = _applicantService.Update(request);
-            return HandleDataResult(result);
+            return HandleDataResult(await _applicationService.UpdateAsync(request));
         }
     }
-
 }

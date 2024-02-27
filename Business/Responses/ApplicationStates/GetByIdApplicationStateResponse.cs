@@ -2,6 +2,6 @@
 {
     public class GetByIdApplicationStateResponse
     {
-        public string Name { get; set; }
+        public int Name { get; set; }
     }
 }

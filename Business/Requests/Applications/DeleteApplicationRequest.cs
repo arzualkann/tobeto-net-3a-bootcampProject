@@ -1,7 +1,10 @@
-﻿namespace Business.Requests.Applications
+﻿
+namespace Business.Requests.Applications
 {
     public class DeleteApplicationRequest
     {
         public int Id { get; set; }
+
     }
+
 }

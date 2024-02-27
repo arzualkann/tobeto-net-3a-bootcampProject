@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using Business.Abstracts;
 using Business.Requests.Applicants;
 using Business.Responses.Applicants;
@@ -12,49 +13,86 @@ namespace Business.Concretes
     {
         private readonly IApplicantRepository _applicantRepository;
         private readonly IMapper _mapper;
+
         public ApplicantManager(IApplicantRepository applicantRepository, IMapper mapper)
         {
             _applicantRepository = applicantRepository;
             _mapper = mapper;
         }
 
-        public async Task<IDataResult<List<GetAllApplicantResponse>>> GetAllAsync()
-        {
-            List<Applicant> applicants = await _applicantRepository.GetAllAsync();
-            List<GetAllApplicantResponse> responses = _mapper.Map<List<GetAllApplicantResponse>>(applicants);
-            return new SuccessDataResult<List<GetAllApplicantResponse>>(responses, "Listeleme başarılı.");
-        }
-
-        public async Task<IDataResult<GetByIdApplicantResponse>> GetByIdAsync(int id)
-        {
-            Applicant applicant = await _applicantRepository.GetAsync(x => x.Id == id);
-            GetByIdApplicantResponse response = _mapper.Map<GetByIdApplicantResponse>(applicant);
-            return new SuccessDataResult<GetByIdApplicantResponse>(response);
-        }
-
-        public async Task<IDataResult<CreateApplicantResponse>> AddAsync(CreateApplicantRequest request)
+        public IDataResult<AddApplicantResponse> Add(AddApplicantRequest request)
         {
             Applicant applicant = _mapper.Map<Applicant>(request);
-            await _applicantRepository.AddAsync(applicant);
-            CreateApplicantResponse response = _mapper.Map<CreateApplicantResponse>(applicant);
-            return new SuccessDataResult<CreateApplicantResponse>(response, "Ekleme işlemi başarılı");
+
+            _applicantRepository.Add(applicant);
+
+            AddApplicantResponse response = _mapper.Map<AddApplicantResponse>(applicant);
+
+            return new SuccessDataResult<AddApplicantResponse>(response, "Added Successfully");
         }
 
-        public async Task<IDataResult<DeleteApplicantResponse>> DeleteAsync(DeleteApplicantRequest request)
+        public IDataResult<DeleteApplicantResponse> Delete(DeleteApplicantRequest request)
         {
-            Applicant applicant = _applicantRepository.Get(x => x.Id == request.UserId);
-            await _applicantRepository.DeleteAsync(applicant);
-            DeleteApplicantResponse response = _mapper.Map<DeleteApplicantResponse>(applicant);
-            return new SuccessDataResult<DeleteApplicantResponse>(response, "Başarıyla silindi");
+            Applicant deleteToApplicant = _applicantRepository.GetById(predicate: applicant => applicant.Id == request.Id);
+
+            if (deleteToApplicant != null)
+            {
+                var deletedApplicant = _applicantRepository.Delete(deleteToApplicant);
+
+                var response = _mapper.Map<DeleteApplicantResponse>(deletedApplicant);
+
+                return new SuccessDataResult<DeleteApplicantResponse>(response, "Deleted Successfully");
+            }
+            else
+            {
+                return new ErrorDataResult<DeleteApplicantResponse>("Applicant not found");
+            }
+
         }
 
-        public async Task<IDataResult<UpdateApplicantResponse>> UpdateAsync(UpdateApplicantRequest request)
+        public IDataResult<List<GetAllApplicantResponse>> GetAll()
         {
-            Applicant applicant = await _applicantRepository.GetAsync(x => x.Id == request.UserId);
-            _mapper.Map(request, applicant);
-            await _applicantRepository.UpdateAsync(applicant);
-            UpdateApplicantResponse response = _mapper.Map<UpdateApplicantResponse>(applicant);
-            return new SuccessDataResult<UpdateApplicantResponse>(response, "Güncelleme başarılı");
+            List<Applicant> applicants = _applicantRepository.GetAll();
+
+            List<GetAllApplicantResponse> responses = _mapper.Map<List<GetAllApplicantResponse>>(applicants);
+
+            return new SuccessDataResult<List<GetAllApplicantResponse>>(responses, "Listed Successfully");
+        }
+
+        public IDataResult<GetApplicantByIdResponse> GetById(GetApplicantByIdRequest request)
+        {
+            Applicant applicant = _applicantRepository.GetById(predicate: applicant => applicant.Id == request.Id);
+
+            if (applicant != null)
+            {
+                GetApplicantByIdResponse response = _mapper.Map<GetApplicantByIdResponse>(applicant);
+
+                return new SuccessDataResult<GetApplicantByIdResponse>(response, "Showed Successfully");
+            }
+            else
+            {
+                return new ErrorDataResult<GetApplicantByIdResponse>("Applicant not found");
+            }
+        }
+
+        public IDataResult<UpdateApplicantResponse> Update(UpdateApplicantRequest request)
+        {
+            Applicant updateToApplicant = _applicantRepository.GetById(predicate: applicant => applicant.Id == request.Id);
+
+            if (updateToApplicant != null)
+            {
+                _mapper.Map(request, updateToApplicant);
+
+                _applicantRepository.Update(updateToApplicant);
+
+                var response = _mapper.Map<UpdateApplicantResponse>(updateToApplicant);
+
+                return new SuccessDataResult<UpdateApplicantResponse>(response, "Updated Successfully");
+            }
+            else
+            {
+                return new ErrorDataResult<UpdateApplicantResponse>("Applicant not found");
+            }
         }
     }
 }

@@ -1,21 +1,12 @@
 ﻿using AutoMapper;
-using Azure;
 using Business.Abstracts;
 using Business.Requests.BlackList;
 using Business.Responses.Applications;
-using Business.Responses.ApplicationStates;
 using Business.Responses.BlackList;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
-using DataAccess.Concretes.Repositories;
 using Entities.Concretes;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Business.Concretes;
 
@@ -60,14 +51,14 @@ public class BlackListManager : IBlackListService
 
     public async Task<IDataResult<List<GetAllBlackListResponse>>> GetAllAsync()
     {
-        List<BlackList> blackLists=await _blackListRepository.GetAllAsync(include:x=>x.Include(bl => bl.Applicant));
+        List<BlackList> blackLists=await _blackListRepository.GetAllAsync();
         List<GetAllBlackListResponse> responses=_mapper.Map<List<GetAllBlackListResponse>>(blackLists);
         return new SuccessDataResult<List<GetAllBlackListResponse>>(responses, "Listed Succesfully");
     }
 
-    public async Task<IDataResult<GetByIdBlackListResponse>> GetByIdAsync(GetByIdBlackListRequest request)
+    public async Task<IDataResult<GetByIdBlackListResponse>> GetByIdAsync(int id)
     {
-        var blackList=await _blackListRepository.GetByIdAsync(predicate:blackList=> blackList.Id == request.Id);
+        var blackList=await _blackListRepository.GetByIdAsync(x=>x.Id==id);
         if (blackList == null)
         {
             return new ErrorDataResult<GetByIdBlackListResponse>("BlackList not found");
