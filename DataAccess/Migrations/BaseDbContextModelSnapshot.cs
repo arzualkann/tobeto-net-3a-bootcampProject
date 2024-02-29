@@ -131,7 +131,8 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicantId");
+                    b.HasIndex("ApplicantId")
+                        .IsUnique();
 
                     b.ToTable("BlackList", (string)null);
                 });
@@ -356,8 +357,8 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Entities.Concretes.BlackList", b =>
                 {
                     b.HasOne("Entities.Concretes.Applicant", "Applicant")
-                        .WithMany()
-                        .HasForeignKey("ApplicantId")
+                        .WithOne("BlackList")
+                        .HasForeignKey("Entities.Concretes.BlackList", "ApplicantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -429,6 +430,9 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Entities.Concretes.Applicant", b =>
                 {
                     b.Navigation("Applications");
+
+                    b.Navigation("BlackList")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Entities.Concretes.Instructor", b =>
