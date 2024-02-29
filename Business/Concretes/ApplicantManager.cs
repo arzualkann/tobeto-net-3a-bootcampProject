@@ -3,6 +3,7 @@ using Azure;
 using Business.Abstracts;
 using Business.Requests.Applicants;
 using Business.Responses.Applicants;
+using Core.Exceptions.Types;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -94,5 +95,14 @@ namespace Business.Concretes
                 return new ErrorDataResult<UpdateApplicantResponse>("Applicant not found");
             }
         }
+        private async Task CheckIfApplicantNotExists(int applicantId)
+        {
+            var isExists = await _applicantRepository.GetByIdAsync(a => a.Id == applicantId);
+            if (isExists is null)
+                throw new BusinessException("Applicant does not exists");
+        }
+
+
+
     }
 }
