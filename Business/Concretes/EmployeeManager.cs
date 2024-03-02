@@ -4,6 +4,7 @@ using Business.Abstracts;
 using Business.Requests.Employees;
 using Business.Responses.Applicants;
 using Business.Responses.Employees;
+using Business.Rules;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -14,6 +15,7 @@ namespace Business.Concretes
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
+        private readonly EmployeeBusinessRules _rules;
 
         public EmployeeManager(IEmployeeRepository employeeRepository, IMapper mapper)
         {

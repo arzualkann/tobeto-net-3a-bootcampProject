@@ -10,5 +10,6 @@ namespace DataAccess.Abstracts
 {
     public interface IEmployeeRepository : IRepository<Employee, int>
     {
+        Task GetById(int id);
     }
 }
