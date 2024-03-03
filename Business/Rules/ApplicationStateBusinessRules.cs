@@ -15,10 +15,8 @@ public class ApplicationStateBusinessRules : BaseBusinessRules
     }
 
 
-    public async Task CheckIfApplicationStateExists(int id)
+    public async Task CheckIfApplicationStateExists(ApplicationState? applicationState)
     {
-        var isExists = await _applicationStateRepository.GetByIdAsync(a => a.Id == id);
-        if (isExists is null)
-            throw new BusinessException("ApplicationState does not exists");
+        if (applicationState is null) throw new NotFoundException("ApplicationState not found.");
     }
 }

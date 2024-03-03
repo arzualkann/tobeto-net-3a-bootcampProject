@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Abstracts
 {
-    public interface IEmployeeRepository : IRepository<Employee, int>
+    public interface IEmployeeRepository : IRepository<Employee, int>,IAsyncRepository<Employee, int>
     {
-        Task GetById(int id);
+       
     }
 }

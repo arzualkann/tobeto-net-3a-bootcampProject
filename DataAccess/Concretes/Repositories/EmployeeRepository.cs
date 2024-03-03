@@ -15,5 +15,6 @@ namespace DataAccess.Concretes.Repositories
         public EmployeeRepository(BaseDbContext context) : base(context)
         {
         }
+
     }
 }

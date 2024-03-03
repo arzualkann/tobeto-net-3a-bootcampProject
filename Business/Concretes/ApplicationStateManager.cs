@@ -2,6 +2,7 @@
 using Business.Abstracts;
 using Business.Requests.ApplicationStates;
 using Business.Responses.ApplicationStates;
+using Business.Rules;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -13,11 +14,13 @@ namespace Business.Concretes
     {
         private readonly IApplicationStateRepository _applicationStateRepository;
         private readonly IMapper _mapper;
+        private readonly ApplicationStateBusinessRules _applicationStateBusinessRules;
 
-        public ApplicationStateManager(IApplicationStateRepository applicationstateRepository, IMapper mapper)
+        public ApplicationStateManager(IApplicationStateRepository applicationstateRepository, IMapper mapper, ApplicationStateBusinessRules applicationStateBusinessRules)
         {
             _applicationStateRepository = applicationstateRepository;
             _mapper = mapper;
+            _applicationStateBusinessRules = applicationStateBusinessRules;
         }
 
         public async Task<IDataResult<CreateApplicationStateResponse>> AddAsync(CreateApplicationStateRequest request)
@@ -35,10 +38,7 @@ namespace Business.Concretes
         {
             var applicationState = await _applicationStateRepository.GetByIdAsync(predicate: applicationState => applicationState.Id == request.Id);
 
-            if (applicationState == null)
-            {
-                return new ErrorDataResult<DeleteApplicationStateResponse>("ApplicationState not found");
-            }
+            await _applicationStateBusinessRules.CheckIfApplicationStateExists(applicationState);
 
             await _applicationStateRepository.DeleteAsync(applicationState);
 
@@ -51,9 +51,9 @@ namespace Business.Concretes
         public async Task<IDataResult<List<GetAllApplicationStateResponse>>> GetAllAsync()
         {
             List<ApplicationState> applicationStates = await _applicationStateRepository.GetAllAsync(include: x => x.Include(x => x.Application).Include(x => x.Application.Bootcamp));
-            
+
             List<GetAllApplicationStateResponse> responses = _mapper.Map<List<GetAllApplicationStateResponse>>(applicationStates);
-            
+
             return new SuccessDataResult<List<GetAllApplicationStateResponse>>(responses, "Listed Successfully");
         }
 
@@ -61,12 +61,7 @@ namespace Business.Concretes
         {
             var applicationState = await _applicationStateRepository.GetByIdAsync(predicate: applicationState => applicationState.Id == request.Id);
 
-            if (applicationState == null)
-            {
-                return new ErrorDataResult<GetByIdApplicationStateResponse>("ApplicationState not found");
-            }
-
-            await _applicationStateRepository.DeleteAsync(applicationState);
+            await _applicationStateBusinessRules.CheckIfApplicationStateExists(applicationState);
 
             var response = _mapper.Map<GetByIdApplicationStateResponse>(applicationState);
 
@@ -77,10 +72,7 @@ namespace Business.Concretes
         {
             var applicationState = await _applicationStateRepository.GetByIdAsync(predicate: applicationState => applicationState.Id == request.Id);
 
-            if (applicationState == null)
-            {
-                return new ErrorDataResult<UpdateApplicationStateResponse>("ApplicationState not found");
-            }
+            await _applicationStateBusinessRules.CheckIfApplicationStateExists(applicationState);
 
             _mapper.Map(request, applicationState);
 

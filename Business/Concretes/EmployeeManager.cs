@@ -15,17 +15,20 @@ namespace Business.Concretes
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
-        private readonly EmployeeBusinessRules _rules;
+        private readonly EmployeeBusinessRules _employeeBusinessRules;
 
-        public EmployeeManager(IEmployeeRepository employeeRepository, IMapper mapper)
+        public EmployeeManager(IEmployeeRepository employeeRepository, IMapper mapper, EmployeeBusinessRules employeeBusinessRules)
         {
             _employeeRepository = employeeRepository;
             _mapper = mapper;
+            _employeeBusinessRules = employeeBusinessRules;
         }
 
         public IDataResult<AddEmployeeResponse> Add(AddEmployeeRequest request)
         {
             Employee employee = _mapper.Map<Employee>(request);
+
+            _employeeBusinessRules.CheckIfEmailRegistered(request.Email);
 
             _employeeRepository.Add(employee);
 
@@ -38,18 +41,14 @@ namespace Business.Concretes
         {
             Employee deleteToEmployee = _employeeRepository.GetById(predicate: employee => employee.Id == request.Id);
 
-            if (deleteToEmployee != null)
-            {
-                var deletedEmployee = _employeeRepository.Delete(deleteToEmployee);
+            _employeeBusinessRules.CheckIfEmployeeExists(deleteToEmployee);
 
-                var response = _mapper.Map<DeleteEmployeeResponse>(deletedEmployee);
+            var deletedEmployee = _employeeRepository.Delete(deleteToEmployee);
 
-                return new SuccessDataResult<DeleteEmployeeResponse>(response, "Deleted Successfully.");
-            }
-            else
-            {
-                return new ErrorDataResult<DeleteEmployeeResponse>("Employee not found");
-            }
+            var response = _mapper.Map<DeleteEmployeeResponse>(deletedEmployee);
+
+            return new SuccessDataResult<DeleteEmployeeResponse>(response, "Deleted Successfully.");
+
         }
 
         public IDataResult<List<GetAllEmployeeResponse>> GetAll()
@@ -65,36 +64,28 @@ namespace Business.Concretes
         {
             Employee employee = _employeeRepository.GetById(predicate: employee => employee.Id == request.Id);
 
-            if (employee != null)
-            {
-                GetEmployeeByIdResponse response = _mapper.Map<GetEmployeeByIdResponse>(employee);
+            _employeeBusinessRules.CheckIfEmployeeExists(employee);
 
-                return new SuccessDataResult<GetEmployeeByIdResponse>(response,"Showed Successfully.");
-            }
-            else
-            {
-                return new ErrorDataResult<GetEmployeeByIdResponse>("Employee not found");
-            }
+            GetEmployeeByIdResponse response = _mapper.Map<GetEmployeeByIdResponse>(employee);
+
+            return new SuccessDataResult<GetEmployeeByIdResponse>(response, "Showed Successfully.");
+
         }
 
         public IDataResult<UpdateEmployeeResponse> Update(UpdateEmployeeRequest request)
         {
             Employee updateToEmployee = _employeeRepository.GetById(predicate: employee => employee.Id == request.Id);
 
-            if (updateToEmployee != null)
-            {
-                _mapper.Map(request, updateToEmployee);
+            _employeeBusinessRules.CheckIfEmployeeExists(updateToEmployee);
 
-                _employeeRepository.Update(updateToEmployee);
+            _mapper.Map(request, updateToEmployee);
 
-                var response = _mapper.Map<UpdateEmployeeResponse>(updateToEmployee);
+            _employeeRepository.Update(updateToEmployee);
 
-                return new SuccessDataResult<UpdateEmployeeResponse>(response, "Updated Successfully");
-            }
-            else
-            {
-                return new ErrorDataResult<UpdateEmployeeResponse>("Employee not found");
-            }
+            var response = _mapper.Map<UpdateEmployeeResponse>(updateToEmployee);
+
+            return new SuccessDataResult<UpdateEmployeeResponse>(response, "Updated Successfully");
+
         }
     }
 }

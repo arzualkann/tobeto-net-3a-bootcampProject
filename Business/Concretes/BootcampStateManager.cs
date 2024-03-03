@@ -40,8 +40,6 @@ namespace Business.Concretes
                 return new ErrorDataResult<DeleteBootcampStateResponse>("BootcampState not found");
             }
 
-            await _bootcampStateRepository.DeleteAsync(bootcampState);
-
             var response = _mapper.Map<DeleteBootcampStateResponse>(bootcampState);
 
             return new SuccessDataResult<DeleteBootcampStateResponse>(response, "Deleted Successfully");
