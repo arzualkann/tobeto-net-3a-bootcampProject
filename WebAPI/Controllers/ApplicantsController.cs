@@ -16,7 +16,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("Add")]
-        public IActionResult Add(AddApplicantRequest request)
+        public IActionResult Add(CreateApplicantRequest request)
         {
             var result = _applicantService.Add(request);
             return HandleDataResult(result);

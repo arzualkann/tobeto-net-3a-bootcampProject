@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Business.Responses.Employees
+namespace Business.Responses.Applicants
 {
-    public class AddEmployeeResponse
+    public class CreateApplicantResponse
     {
         public int Id { get; set; }
         public string UserName { get; set; }
@@ -16,8 +16,9 @@ namespace Business.Responses.Employees
         public string NationalIdentity { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string Position { get; set; }
+        public string About { get; set; }
 
         public DateTime CreatedDate { get; set; }
+
     }
 }

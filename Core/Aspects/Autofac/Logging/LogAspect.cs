@@ -2,13 +2,15 @@
 using Core.CrossCuttingConcerns.Logging;
 using Core.CrossCuttingConcerns.Logging.Serilog;
 using Core.Utilities.Interceptors;
+using Core.Utilities.IoC;
 using Core.Utilities.Messages;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace Core.Aspects.Autofac.Logging;
 
-public class LogAspect:MethodInterception
+public class LogAspect : MethodInterception
 {
     private LoggerServiceBase _loggerServiceBase;
     private IHttpContextAccessor _httpContextAccessor;
@@ -17,10 +19,12 @@ public class LogAspect:MethodInterception
     {
         if (loggerService.BaseType != typeof(LoggerServiceBase))
         {
-            throw new Exception(AspectMessages.WrongLoggerType);
+            throw new ArgumentException(AspectMessages.WrongLoggerType);
         }
-        _loggerServiceBase = (LoggerServiceBase)Activator.CreateInstance(loggerService);
-        _httpContextAccessor = (IHttpContextAccessor)Activator.CreateInstance(typeof(HttpContextAccessor));
+
+        _loggerServiceBase = (LoggerServiceBase)ServiceTool.ServiceProvider.GetRequiredService(loggerService);
+        _httpContextAccessor = ServiceTool.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+
     }
 
     protected override void OnBefore(IInvocation invocation)
@@ -38,9 +42,9 @@ public class LogAspect:MethodInterception
         var logDetail = new LogDetail
         {
             MethodName = invocation.Method.Name,
-            LogParameters=logParameters,
-            User = _httpContextAccessor.HttpContext ==null|| _httpContextAccessor.HttpContext.User.Identity.Name==null ? "?" 
-            :_httpContextAccessor.HttpContext.User.Identity.Name
+            LogParameters = logParameters,
+            User = _httpContextAccessor.HttpContext == null || _httpContextAccessor.HttpContext.User.Identity.Name == null ? "?"
+            : _httpContextAccessor.HttpContext.User.Identity.Name
         };
         _loggerServiceBase.Info(JsonConvert.SerializeObject(logDetail));
     }

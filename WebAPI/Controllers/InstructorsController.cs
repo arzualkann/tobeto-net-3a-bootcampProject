@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business.Abstracts;
 using Business.Requests.Instructors;
+using Core.Utilities.Security.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +12,12 @@ namespace WebApi.Controllers
     public class InstructorsController : BaseController
     {
         private readonly IInstructorService _instructorService;
+        private readonly IAuthService _authService;
 
-        public InstructorsController(IInstructorService instructorService)
+        public InstructorsController(IInstructorService instructorService,IAuthService authService)
         {
             _instructorService = instructorService;
+            _authService = authService;
         }
 
         [HttpPost("Add")]
@@ -52,5 +55,11 @@ namespace WebApi.Controllers
             var result = _instructorService.Update(request);
             return HandleDataResult(result);
         }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
+        {
+            var result = await _authService.Register(userForRegisterDto);
+            return HandleDataResult(result);
+        }
     }
-}
+}       

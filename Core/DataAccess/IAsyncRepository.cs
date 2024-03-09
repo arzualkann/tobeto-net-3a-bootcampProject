@@ -17,7 +17,6 @@ namespace Core.DataAccess
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null);
         Task<TEntity> GetByIdAsync(Expression<Func<TEntity, bool>> predicate,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null);
-        
 
         Task<TEntity> AddAsync(TEntity entity);
         Task<TEntity> UpdateAsync(TEntity entity);

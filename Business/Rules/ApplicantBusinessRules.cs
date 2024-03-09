@@ -20,9 +20,9 @@ public class ApplicantBusinessRules:BaseBusinessRules
         if (applicant is null) throw new NotFoundException("Applicant not found.");
     }
 
-    public async Task CheckIfEmailRegistered(string? email)
+    public void CheckIfEmailRegistered(string? email)
     {
-        var applicant = await _applicantRepository.GetByIdAsync(predicate: applicant => applicant.Email == email);
+        var applicant =  _applicantRepository.GetById(predicate: applicant => applicant.Email == email);
 
         if (applicant is not null) throw new BusinessException("There is already a user with this email."); ;
     }

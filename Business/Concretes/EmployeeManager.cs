@@ -24,7 +24,7 @@ namespace Business.Concretes
             _employeeBusinessRules = employeeBusinessRules;
         }
 
-        public IDataResult<AddEmployeeResponse> Add(AddEmployeeRequest request)
+        public IDataResult<CreateEmployeeResponse> Add(CreateEmployeeRequest request)
         {
             Employee employee = _mapper.Map<Employee>(request);
 
@@ -32,9 +32,9 @@ namespace Business.Concretes
 
             _employeeRepository.Add(employee);
 
-            AddEmployeeResponse response = _mapper.Map<AddEmployeeResponse>(employee);
+            CreateEmployeeResponse response = _mapper.Map<CreateEmployeeResponse>(employee);
 
-            return new SuccessDataResult<AddEmployeeResponse>(response, "Added Successfully.");
+            return new SuccessDataResult<CreateEmployeeResponse>(response, "Added Successfully.");
         }
 
         public IDataResult<DeleteEmployeeResponse> Delete(DeleteEmployeeRequest request)

@@ -18,7 +18,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("Add")]
-        public IActionResult Add(AddEmployeeRequest request)
+        public IActionResult Add(CreateEmployeeRequest request)
         {
             var result = _employeeService.Add(request);
             return HandleDataResult(result);

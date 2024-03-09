@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Business.Requests.Applicants
 {
-    public class AddApplicantRequest
+    public class CreateApplicantRequest
     {
         public string UserName { get; set; }
         public string FirstName { get; set; }

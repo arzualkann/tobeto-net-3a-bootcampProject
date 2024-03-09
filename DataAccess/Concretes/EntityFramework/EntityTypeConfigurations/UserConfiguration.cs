@@ -1,30 +1,23 @@
-﻿using Entities.Concretes;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Core.Utilities.Security.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DataAccess.Concretes.EntityFramework.EntityTypeConfigurations
+namespace DataAccess.Concretes.EntityFramework.EntityTypeConfigurations;
+
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    public class UserConfiguration : IEntityTypeConfiguration<User>
+    public void Configure(EntityTypeBuilder<User> builder)
     {
-        public void Configure(EntityTypeBuilder<User> builder)
-        {
-            builder.ToTable("Users").HasKey(u => u.Id);
-            builder.Property(x => x.Id).HasColumnName("Id");
-            builder.Property(u => u.UserName).IsRequired().HasMaxLength(50).HasColumnName("Username");
-            builder.Property(u => u.FirstName).IsRequired().HasMaxLength(50).HasColumnName("Name");
-            builder.Property(u => u.LastName).IsRequired().HasMaxLength(50).HasColumnName("Lastname");
-            builder.Property(u => u.DateOfBirth).IsRequired().HasColumnName("DatoOfBirth");
-            builder.Property(u => u.NationalIdentity).IsRequired().HasMaxLength(11).HasColumnName("NationalIdentity");
-            builder.Property(u => u.Email).IsRequired().HasMaxLength(100).HasColumnName("Email");
-            builder.Property(u => u.Password).IsRequired().HasMaxLength(100).HasColumnName("Password");
-            builder.Property(x => x.CreatedDate).HasColumnName("CreatedDate");
-            builder.Property(x => x.UpdatedDate).HasColumnName("UpdatedDate");
-            builder.Property(x => x.DeletedDate).HasColumnName("DeletedDate");
-        }
+        builder.ToTable("Users").HasKey(t => t.Id);
+        builder.Property(x => x.Id).HasColumnName("Id");
+        builder.Property(x => x.FirstName).HasColumnName("FirstName");
+        builder.Property(x => x.LastName).HasColumnName("LastName");
+        builder.Property(x => x.Email).HasColumnName("Email");
+        builder.Property(x => x.PasswordHash).HasColumnName("PasswordHash");
+        builder.Property(x => x.PasswordSalt).HasColumnName("PasswordSalt");
+
+        builder.HasMany(t => t.UserOperationClaims);
+
     }
 }
+

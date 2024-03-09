@@ -14,13 +14,13 @@ namespace Business.Profiles.Applicants
     {
         public MappingProfiles()
         {
-            CreateMap<Applicant, AddApplicantRequest>().ReverseMap();
+            CreateMap<Applicant, CreateApplicantRequest>().ReverseMap();
             CreateMap<Applicant, UpdateApplicantRequest>().ReverseMap();
             CreateMap<Applicant, DeleteApplicantRequest>().ReverseMap();
 
             CreateMap<Applicant, GetAllApplicantResponse>().ReverseMap();
             CreateMap<Applicant, GetApplicantByIdResponse>().ReverseMap();
-            CreateMap<Applicant, AddApplicantResponse>().ReverseMap();
+            CreateMap<Applicant, CreateApplicantResponse>().ReverseMap();
             CreateMap<Applicant, UpdateApplicantResponse>().ReverseMap();
         }
     }

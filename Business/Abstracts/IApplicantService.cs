@@ -11,7 +11,7 @@ namespace Business.Abstracts
 {
     public interface IApplicantService
     {
-        public IDataResult<AddApplicantResponse> Add(AddApplicantRequest request);
+        public IDataResult<CreateApplicantResponse> Add(CreateApplicantRequest request);
         public IDataResult<UpdateApplicantResponse> Update(UpdateApplicantRequest request);
         public IDataResult<DeleteApplicantResponse> Delete(DeleteApplicantRequest request);
         public IDataResult<List<GetAllApplicantResponse>> GetAll();

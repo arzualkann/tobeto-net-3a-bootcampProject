@@ -27,7 +27,7 @@ public class ApplicantManager : IApplicantService
         _applicantBusinessRules = applicantBusinessRules;
     }
 
-    public IDataResult<AddApplicantResponse> Add(AddApplicantRequest request)
+    public IDataResult<CreateApplicantResponse> Add(CreateApplicantRequest request)
     {
         Applicant applicant = _mapper.Map<Applicant>(request);
 
@@ -35,9 +35,9 @@ public class ApplicantManager : IApplicantService
 
         _applicantRepository.Add(applicant);
 
-        AddApplicantResponse response = _mapper.Map<AddApplicantResponse>(applicant);
+        CreateApplicantResponse response = _mapper.Map<CreateApplicantResponse>(applicant);
 
-        return new SuccessDataResult<AddApplicantResponse>(response, "Added Successfully");
+        return new SuccessDataResult<CreateApplicantResponse>(response, "Added Successfully");
     }
 
     public IDataResult<DeleteApplicantResponse> Delete(DeleteApplicantRequest request)
