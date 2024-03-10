@@ -1,4 +1,5 @@
-﻿using Core.CrossCuttingConcerns.Rules;
+﻿using Business.Constans;
+using Core.CrossCuttingConcerns.Rules;
 using Core.Exceptions.Types;
 using DataAccess.Abstracts;
 
@@ -15,6 +16,6 @@ public class BlackListBusinessRules:BaseBusinessRules
     {
         var isExists = await _blackListRepository.GetByIdAsync(a => a.Id == id);
         if (isExists is null)
-            throw new BusinessException("Applicant does not exists");
+            throw new BusinessException(BlackListMessages.AlreadyExists);
     }
 }

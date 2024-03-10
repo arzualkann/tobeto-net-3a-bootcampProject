@@ -1,4 +1,5 @@
-﻿using Core.CrossCuttingConcerns.Rules;
+﻿using Business.Constans;
+using Core.CrossCuttingConcerns.Rules;
 using Core.Exceptions.Types;
 using DataAccess.Abstracts;
 using DataAccess.Concretes.Repositories;
@@ -17,13 +18,12 @@ public class ApplicantBusinessRules:BaseBusinessRules
 
     public void CheckIfApplicantExists(Applicant? applicant)
     {
-        if (applicant is null) throw new NotFoundException("Applicant not found.");
+        if (applicant is null) throw new NotFoundException(ApplicantMessages.ApplicantNotFound);
     }
 
-    public void CheckIfEmailRegistered(string? email)
+    public void CheckIfEmailExists(string? email)
     {
         var applicant =  _applicantRepository.GetById(predicate: applicant => applicant.Email == email);
-
-        if (applicant is not null) throw new BusinessException("There is already a user with this email."); ;
+        if (applicant == null) throw new BusinessException(ApplicantMessages.EmailCheck);
     }
 }

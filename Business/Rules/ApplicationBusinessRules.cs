@@ -1,4 +1,5 @@
-﻿using Core.CrossCuttingConcerns.Rules;
+﻿using Business.Constans;
+using Core.CrossCuttingConcerns.Rules;
 using Core.Exceptions.Types;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -14,7 +15,7 @@ public class ApplicationBusinessRules:BaseBusinessRules
     }
     public async Task CheckIfApplicationExists(Application? application)
     {
-        if (application is null) throw new NotFoundException("Application not found.");
+        if (application is not null) throw new NotFoundException(ApplicationMessages.AlreadyExists);
     }
 
     public async Task CheckIfApplicationMaked(int? applicantId, int? bootcampId)
@@ -22,6 +23,6 @@ public class ApplicationBusinessRules:BaseBusinessRules
         var application = await _applicationRepository
             .GetByIdAsync(predicate: application => application.ApplicantId == applicantId && application.BootcampId == bootcampId);
 
-        if (application is not null) throw new BusinessException("There is already an application for this bootcamp."); ;
+        if (application is not null) throw new BusinessException(ApplicationMessages.ApplicationMaked); 
     }
 }

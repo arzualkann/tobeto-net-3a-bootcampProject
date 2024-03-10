@@ -15,5 +15,6 @@ public class ApplicationMessages
     public static string ApplicationUpdated = "Application Updated Successfully";
     public static string ApplicantBlacklisted = "Applicant is blacklisted";
     public static string ApplicationIdCheck = "ID could not be found";
-    public static string ApplicationAlreadyExists = "You already have an application";
+    public static string AlreadyExists = "You already have an application";
+    public static string ApplicationMaked = "There is already an application for this bootcamp.";
 }

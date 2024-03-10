@@ -31,7 +31,7 @@ public class ApplicantManager : IApplicantService
     {
         Applicant applicant = _mapper.Map<Applicant>(request);
 
-        _applicantBusinessRules.CheckIfEmailRegistered(request.Email);
+        _applicantBusinessRules.CheckIfEmailExists(request.Email);
 
         _applicantRepository.Add(applicant);
 

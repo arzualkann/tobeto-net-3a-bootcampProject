@@ -1,4 +1,5 @@
-﻿using Core.CrossCuttingConcerns.Rules;
+﻿using Business.Constans;
+using Core.CrossCuttingConcerns.Rules;
 using Core.Exceptions.Types;
 using DataAccess.Abstracts;
 using System;
@@ -19,7 +20,7 @@ public class BootcampBusinessRules:BaseBusinessRules
     public async Task CheckİfBootcampNameNotExist(string bootcampName)
     {
         var isExists = await _bootcampRepository.GetAllAsync(bootcamp=>bootcamp.Name==bootcampName);
-        if (isExists is not null) throw new BusinessException("bootcampname is already exists");      
+        if (isExists is not null) throw new BusinessException(BootcampMessages.BootcampNameCheck);      
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Core.CrossCuttingConcerns.Rules;
+﻿using Business.Constans;
+using Core.CrossCuttingConcerns.Rules;
 using Core.Exceptions.Types;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -16,13 +17,13 @@ public class InstructorBusinessRules:BaseBusinessRules
 
     public void CheckIfInstructorExists(Instructor? instructor)
     {
-        if (instructor is null) throw new NotFoundException("Instructor not found.");
+        if (instructor is null) throw new NotFoundException(InstructorMessages.InstructorCheck);
     }
 
     public async Task CheckIfEmailRegistered(string? email)
     {
         var instructor = _instructorRepository.GetById(predicate: instructor => instructor.Email == email);
 
-        if (instructor is not null) throw new BusinessException("There is already an instructor with this email."); ;
+        if (instructor is not null) throw new BusinessException(InstructorMessages.EmailCheck); ;
     }
 }

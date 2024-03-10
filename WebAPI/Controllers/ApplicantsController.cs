@@ -1,5 +1,6 @@
 ﻿using Business.Abstracts;
 using Business.Requests.Applicants;
+using Core.Utilities.Security.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -9,10 +10,12 @@ namespace WebApi.Controllers
     public class ApplicantsController : BaseController
     {
         private readonly IApplicantService _applicantService;
+        
 
         public ApplicantsController(IApplicantService applicantService)
         {
             _applicantService = applicantService;
+            
         }
 
         [HttpPost("Add")]
@@ -50,6 +53,6 @@ namespace WebApi.Controllers
             var result = _applicantService.Update(request);
             return HandleDataResult(result);
         }
-
+        
     }
 }

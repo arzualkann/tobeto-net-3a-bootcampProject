@@ -1,4 +1,5 @@
-﻿using Core.CrossCuttingConcerns.Rules;
+﻿using Business.Constans;
+using Core.CrossCuttingConcerns.Rules;
 using Core.Exceptions.Types;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -17,6 +18,6 @@ public class ApplicationStateBusinessRules : BaseBusinessRules
 
     public async Task CheckIfApplicationStateExists(ApplicationState? applicationState)
     {
-        if (applicationState is null) throw new NotFoundException("ApplicationState not found.");
+        if (applicationState is null) throw new NotFoundException(ApplicationStateMessages.ApplicationStateCheck);
     }
 }

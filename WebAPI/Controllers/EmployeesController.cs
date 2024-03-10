@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business.Abstracts;
 using Business.Requests.Employees;
+using Core.Utilities.Security.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +12,12 @@ namespace WebApi.Controllers
     public class EmployeesController : BaseController
     {
         private readonly IEmployeeService _employeeService;
+       
 
         public EmployeesController(IEmployeeService employeeService)
         {
             _employeeService = employeeService;
+         
         }
 
         [HttpPost("Add")]
@@ -52,5 +55,6 @@ namespace WebApi.Controllers
             var result = _employeeService.Update(request);
             return HandleDataResult(result);
         }
+        
     }
 }

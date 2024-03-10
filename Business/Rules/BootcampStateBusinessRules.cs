@@ -1,6 +1,8 @@
-﻿using Core.CrossCuttingConcerns.Rules;
+﻿using Business.Constans;
+using Core.CrossCuttingConcerns.Rules;
 using Core.Exceptions.Types;
 using DataAccess.Abstracts;
+using Entities.Concretes;
 
 namespace Business.Rules;
 
@@ -11,10 +13,8 @@ public class BootcampStateBusinessRules : BaseBusinessRules
     {
         _repository = repository;
     }
-    public async Task CheckIfBootcampStateNotExists(int id)
+    public async Task CheckIfBootcampStateExists(BootcampState? bootcampState)
     {
-        var isExists=await _repository.GetAllAsync(b=>b.Id==id);
-        if (isExists is not null) throw new BusinessException("BoocampState is not exists");       
-        
+        if (bootcampState is null) throw new NotFoundException(BootcampStateMessages.BootcampStateNotFound);
     }
 }
