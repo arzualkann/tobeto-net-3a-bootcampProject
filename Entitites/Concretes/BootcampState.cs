@@ -7,10 +7,19 @@ using System.Threading.Tasks;
 
 namespace Entities.Concretes
 {
-    public class BootcampState:BaseEntity<int>
+    public class BootcampState : BaseEntity<int>
     {
-        //id,name
+        
         public string Name { get; set; }
         public virtual Bootcamp Bootcamp { get; set; }
+        public BootcampState(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+        public BootcampState()
+        {
+
+        }
     }
 }

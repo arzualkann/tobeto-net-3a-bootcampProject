@@ -9,7 +9,7 @@ namespace Entities.Concretes
 {
     public class Bootcamp : BaseEntity<int>
     {
-        //id,name,instructor_id,startDate,endDate,bootcampState_id
+        
         public string Name { get; set; }
         public int InstructorId { get; set; }
         public DateTime StartDate { get; set; }
@@ -19,6 +19,19 @@ namespace Entities.Concretes
         public virtual ICollection<Application>? Applications { get; set; }
         public virtual BootcampState BootcampState { get; set; }
         public virtual Instructor Instructor { get; set; }
+
+        public Bootcamp(string name, int ınstructorId, DateTime startDate, DateTime endDate, int bootcampStateId) : this()
+        {
+            Name = name;
+            InstructorId = ınstructorId;
+            StartDate = startDate;
+            EndDate = endDate;
+            BootcampStateId = bootcampStateId;
+        }
+        public Bootcamp()
+        {
+            Applications = new HashSet<Application>();
+        }
 
     }
 }

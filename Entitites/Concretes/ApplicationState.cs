@@ -12,5 +12,16 @@ namespace Entities.Concretes
         //id,name
         public string Name { get; set; }
         public virtual Application? Application { get; set; }
+
+
+        public ApplicationState(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+        public ApplicationState()
+        {
+
+        }
     }
 }
