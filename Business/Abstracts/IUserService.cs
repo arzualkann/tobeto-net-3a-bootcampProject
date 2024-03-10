@@ -5,7 +5,7 @@ namespace Business.Abstracts;
 
 public interface IUserService
 {
-    Task<DataResult<User>> GetById(Guid id);
+    Task<DataResult<User>> GetById(int id);
     Task<DataResult<User>> GetByMail(string email);
 
 }

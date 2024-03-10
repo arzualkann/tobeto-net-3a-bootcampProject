@@ -55,7 +55,7 @@ public class AuthManager : IAuthService
         HashingHelper.CreatePasswordHash(userForRegisterDto.Password, out passwordHash, out passwordSalt);
         var user = new User
         {
-            Id = Guid.NewGuid(),
+            
             Email = userForRegisterDto.Email,
             FirstName = userForRegisterDto.FirstName,
             LastName = userForRegisterDto.LastName,
@@ -86,7 +86,7 @@ public class AuthManager : IAuthService
         return Task.CompletedTask;
     }
 
-    private async Task UserPasswordShouldBeMatch(Guid id, string password)
+    private async Task UserPasswordShouldBeMatch(int id, string password)
     {
         User? user = await _userRepository.GetByIdAsync(u => u.Id == id);
         if (!HashingHelper.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))

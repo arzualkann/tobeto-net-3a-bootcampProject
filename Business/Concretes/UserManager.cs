@@ -14,7 +14,7 @@ public class UserManager : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<DataResult<User>> GetById(Guid id)
+    public async Task<DataResult<User>> GetById(int id)
     {
         return new SuccessDataResult<User>(await _userRepository.GetByIdAsync(x => x.Id == id));
     }

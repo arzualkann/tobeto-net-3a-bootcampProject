@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Business.Responses.Users;
+using Core.Utilities.Security.Entities;
 using Entities.Concretes;
 using System;
 using System.Collections.Generic;

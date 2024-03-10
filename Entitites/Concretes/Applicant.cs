@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Utilities.Security.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,23 +14,24 @@ namespace Entities.Concretes
         public virtual ICollection<Application>? Applications { get; set; }
         public virtual BlackList? BlackList { get; set; }
 
-        public Applicant(int id, string userName, string firstName, string lastName, DateTime dateOfBirth,
-            string nationalIdentity, string email, string password, string about) : this()
-        {
-            Id = id;
-            UserName = userName;
-            FirstName = firstName;
-            LastName = lastName;
-            DateOfBirth = dateOfBirth;
-            NationalIdentity = nationalIdentity;
-            Email = email;
-            Password = password;
-            About = about;
-        }
+       
         public Applicant()
         {
             Applications = new HashSet<Application>();
         }
 
+        public Applicant(int id, string username, string firstName, string lastName, DateTime dateOfBirth, string nationalIdentity, string email, byte[] passwordHash, byte[] passwordSalt, string about) : this()
+        {
+            Id = id;
+            Username = username;
+            FirstName = firstName;
+            LastName = lastName;
+            DateOfBirth = dateOfBirth;
+            NationalIdentity = nationalIdentity;
+            Email = email;
+            PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
+            About = about;
+        }
     }
 }

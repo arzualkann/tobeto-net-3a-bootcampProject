@@ -51,7 +51,7 @@ namespace Business.Concretes
 
         public async Task<IDataResult<List<GetAllApplicationResponse>>> GetAllAsync()
         {
-            List<Application> applications = await _applicationRepository.GetAllAsync(include: x => x.Include(x => x.Bootcamp.Name).Include(x => x.Applicant.UserName));
+            List<Application> applications = await _applicationRepository.GetAllAsync(include: x => x.Include(x => x.Bootcamp.Name).Include(x => x.Applicant.Username));
 
             List<GetAllApplicationResponse> responses = _mapper.Map<List<GetAllApplicationResponse>>(applications);
 

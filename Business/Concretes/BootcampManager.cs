@@ -49,7 +49,7 @@ namespace Business.Concretes
 
         public async Task<IDataResult<List<GetAllBootcampResponse>>> GetAllAsync()
         {
-            List<Bootcamp> bootcamps = await _bootcampRepository.GetAllAsync(include: x => x.Include(x => x.Instructor.UserName).Include(x => x.BootcampState.Name));
+            List<Bootcamp> bootcamps = await _bootcampRepository.GetAllAsync(include: x => x.Include(x => x.Instructor.Username).Include(x => x.BootcampState.Name));
 
             List<GetAllBootcampResponse> responses = _mapper.Map<List<GetAllBootcampResponse>>(bootcamps);
 

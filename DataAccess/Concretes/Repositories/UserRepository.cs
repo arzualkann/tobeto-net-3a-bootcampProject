@@ -5,7 +5,7 @@ using DataAccess.Concretes.EntityFramework.Contexts;
 
 namespace DataAccess.Concretes.Repositories;
 
-public class UserRepository : EfRepositoryBase<User, Guid, BaseDbContext>, IUserRepository
+public class UserRepository : EfRepositoryBase<User, int, BaseDbContext>, IUserRepository
 {
     public UserRepository(BaseDbContext context) : base(context)
     {

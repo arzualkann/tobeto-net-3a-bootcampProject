@@ -44,7 +44,7 @@ namespace Business.Concretes
 
             var deletedInstructor = _instructorRepository.Delete(deleteToInstructor);
 
-            var response = new DeleteInstructorResponse { DeletedTime = deletedInstructor.DeletedDate, UserName = deletedInstructor.UserName, Id = deletedInstructor.Id };
+            var response = new DeleteInstructorResponse { DeletedTime = deletedInstructor.DeletedDate, UserName = deletedInstructor.Username, Id = deletedInstructor.Id };
 
             return new SuccessDataResult<DeleteInstructorResponse>(response, "Deleted Successfully.");
 
