@@ -1,6 +1,7 @@
 ﻿using Business.Requests.Instructors;
 using Business.Responses.Instructors;
 using Core.Utilities.Results;
+using Entities.Concretes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

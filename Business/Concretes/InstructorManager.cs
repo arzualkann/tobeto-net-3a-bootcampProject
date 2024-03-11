@@ -71,6 +71,7 @@ namespace Business.Concretes
 
         }
 
+        
         public IDataResult<UpdateInstructorResponse> Update(UpdateInstructorRequest request)
         {
             Instructor updateToInstructor = _instructorRepository.GetById(predicate: instructor => instructor.Id == request.Id);

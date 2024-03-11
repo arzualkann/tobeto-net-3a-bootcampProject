@@ -11,9 +11,6 @@ using DataAccess.Abstracts;
 using Entities.Concretes;
 
 namespace Business.Concretes;
-
-
-
 public class ApplicantManager : IApplicantService
 {
     private readonly IApplicantRepository _applicantRepository;

@@ -1,28 +1,38 @@
 ﻿using Business.Abstracts;
-using Core.Exceptions.Types;
 using Core.Utilities.Results;
-using Core.Utilities.Security.Dtos;
 using Core.Utilities.Security.Entities;
 using Core.Utilities.Security.Hashing;
 using Core.Utilities.Security.JWT;
 using DataAccess.Abstracts;
+using Entities.Concretes;
 using Microsoft.EntityFrameworkCore;
+using Core.Utilities.Security.Dtos;
+using Business.Requests.Applicants;
+using Business.Requests.Instructors;
+using Business.Requests.Employees;
+using Business.Rules;
+using Business.Constans;
 
 namespace Business.Concretes;
-
 public class AuthManager : IAuthService
 {
     private readonly IUserService _userService;
     private readonly ITokenHelper _tokenHelper;
     private readonly IUserOperationClaimRepository _userOperationClaimRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly IEmployeeRepository _employeeRepository;
+    private readonly IInstructorRepository _instructorRepository;
+    private readonly IApplicantRepository _applicantRepository;
+    private readonly AuthBusinessRules _rules;
 
-    public AuthManager(IUserService userService, ITokenHelper tokenHelper, IUserOperationClaimRepository userOperationClaimRepository, IUserRepository userRepository)
+    public AuthManager(IUserService userService, ITokenHelper tokenHelper, IUserOperationClaimRepository userOperationClaimRepository, IEmployeeRepository employeeRepository, IInstructorRepository instructorRepository, IApplicantRepository applicantRepository, AuthBusinessRules rules)
     {
         _userService = userService;
         _tokenHelper = tokenHelper;
         _userOperationClaimRepository = userOperationClaimRepository;
-        _userRepository = userRepository;
+        _applicantRepository = applicantRepository;
+        _employeeRepository = employeeRepository;
+        _instructorRepository = instructorRepository;
+        _rules = rules;
     }
 
     public async Task<DataResult<AccessToken>> CreateAccessToken(User user)
@@ -34,62 +44,79 @@ public class AuthManager : IAuthService
                 Name = x.OperationClaim.Name
             }).ToListAsync();
         var accessToken = _tokenHelper.CreateToken(user, claims);
-        return new SuccessDataResult<AccessToken>(accessToken, "Created Token");
-
+        return new SuccessDataResult<AccessToken>(accessToken, AuthMessages.TokenIsCreated);
     }
 
-    public async Task<DataResult<AccessToken>> Login(UserForLoginDto userForLoginDto)
+    public async Task<DataResult<AccessToken>> Login(UserForLoginDto userForLoginRequest)
     {
-        var user = await _userService.GetByMail(userForLoginDto.Email);
-        await UserShouldBeExists(user.Data);
-        await UserEmailShouldBeExists(userForLoginDto.Email);
-        await UserPasswordShouldBeMatch(user.Data.Id,userForLoginDto.Password);
+        var user = await _userService.GetByMail(userForLoginRequest.Email);
+        await _rules.UserShouldBeExists(user.Data);
+        await _rules.UserEmailShouldBeExists(userForLoginRequest.Email);
+        await _rules.UserPasswordShouldBeMatch(user.Data.Id, userForLoginRequest.Password);
         var createAccessToken = await CreateAccessToken(user.Data);
-        return new SuccessDataResult<AccessToken>(createAccessToken.Data, "Login Success");
+        return new SuccessDataResult<AccessToken>(createAccessToken.Data, AuthMessages.LoginMessage);
     }
 
-    public async Task<DataResult<AccessToken>> Register(UserForRegisterDto userForRegisterDto)
+    public async Task<Result> EmployeeRegister(EmployeeForRegisterRequest employeeForRegisterRequest)
     {
-        await UserEmailShouldBeNotExists(userForRegisterDto.Email);
+        await _rules.UserEmailShouldBeNotExists(employeeForRegisterRequest.Email);
         byte[] passwordHash, passwordSalt;
-        HashingHelper.CreatePasswordHash(userForRegisterDto.Password, out passwordHash, out passwordSalt);
-        var user = new User
+        HashingHelper.CreatePasswordHash(employeeForRegisterRequest.Password, out passwordHash, out passwordSalt);
+        var employee = new Employee
         {
-            
-            Email = userForRegisterDto.Email,
-            FirstName = userForRegisterDto.FirstName,
-            LastName = userForRegisterDto.LastName,
+            Username = employeeForRegisterRequest.UserName,
+            NationalIdentity = employeeForRegisterRequest.NationalIdentity,
+            DateOfBirth = employeeForRegisterRequest.DateOfBirth,
+            Email = employeeForRegisterRequest.Email,
+            FirstName = employeeForRegisterRequest.FirstName,
+            LastName = employeeForRegisterRequest.LastName,
             PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt
+            PasswordSalt = passwordSalt,
+            Position = employeeForRegisterRequest.Position,
         };
-        await _userRepository.AddAsync(user);
-        var createAccessToken = await CreateAccessToken(user);
-        return new SuccessDataResult<AccessToken>(createAccessToken.Data, "Register Success");
+        await _employeeRepository.AddAsync(employee);
+        return new SuccessResult(AuthMessages.RegisterMessage);
     }
 
-
-    private async Task UserEmailShouldBeNotExists(string email)
+    public async Task<Result> InstructorRegister(InstructorForRegisterRequest instructorForRegisterRequest)
     {
-        User? user = await _userRepository.GetByIdAsync(u => u.Email == email);
-        if (user is not null) throw new BusinessException("User mail already exists");
+        await _rules.UserEmailShouldBeNotExists(instructorForRegisterRequest.Email);
+        byte[] passwordHash, passwordSalt;
+        HashingHelper.CreatePasswordHash(instructorForRegisterRequest.Password, out passwordHash, out passwordSalt);
+        var instructor = new Instructor
+        {
+            Username = instructorForRegisterRequest.UserName,
+            NationalIdentity = instructorForRegisterRequest.NationalIdentity,
+            DateOfBirth = instructorForRegisterRequest.DateOfBirth,
+            Email = instructorForRegisterRequest.Email,
+            FirstName = instructorForRegisterRequest.FirstName,
+            LastName = instructorForRegisterRequest.LastName,
+            PasswordHash = passwordHash,
+            PasswordSalt = passwordSalt,
+            CompanyName = instructorForRegisterRequest.CompanyName,
+        };
+         _instructorRepository.Add(instructor);
+        return new SuccessResult(AuthMessages.RegisterMessage);
     }
 
-    private async Task UserEmailShouldBeExists(string email)
+    public async Task<Result> ApplicantRegister(ApplicantForRegisterRequest applicantForRegisterRequest)
     {
-        User? user = await _userRepository.GetByIdAsync(u => u.Email == email);
-        if (user is null) throw new BusinessException("Email or Password don't match");
-    }
-
-    private Task UserShouldBeExists(User? user)
-    {
-        if (user is null) throw new BusinessException("Email or Password don't match");
-        return Task.CompletedTask;
-    }
-
-    private async Task UserPasswordShouldBeMatch(int id, string password)
-    {
-        User? user = await _userRepository.GetByIdAsync(u => u.Id == id);
-        if (!HashingHelper.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-            throw new BusinessException("Email or Password don't match");
+        await _rules.UserEmailShouldBeNotExists(applicantForRegisterRequest.Email);
+        byte[] passwordHash, passwordSalt;
+        HashingHelper.CreatePasswordHash(applicantForRegisterRequest.Password, out passwordHash, out passwordSalt);
+        var applicant = new Applicant
+        {
+            Username = applicantForRegisterRequest.UserName,
+            NationalIdentity = applicantForRegisterRequest.NationalIdentity,
+            DateOfBirth = applicantForRegisterRequest.DateOfBirth,
+            Email = applicantForRegisterRequest.Email,
+            FirstName = applicantForRegisterRequest.FirstName,
+            LastName = applicantForRegisterRequest.LastName,
+            PasswordHash = passwordHash,
+            PasswordSalt = passwordSalt,
+            About = applicantForRegisterRequest.About,
+        };
+        await _applicantRepository.AddAsync(applicant);
+        return new SuccessResult(AuthMessages.RegisterMessage);
     }
 }

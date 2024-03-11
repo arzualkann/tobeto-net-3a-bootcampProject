@@ -17,7 +17,6 @@ namespace Business.Responses.Applicants
         public string Email { get; set; }
         public string Password { get; set; }
         public string About { get; set; }
-
         public DateTime CreatedDate { get; set; }
 
     }

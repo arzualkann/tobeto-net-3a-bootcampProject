@@ -1,6 +1,7 @@
 ﻿using Business.Abstracts;
 using Business.Requests.Applicants;
 using Core.Utilities.Security.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -33,6 +34,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("GetAll")]
+        
         public IActionResult GetAll()
         {
             var result = _applicantService.GetAll();

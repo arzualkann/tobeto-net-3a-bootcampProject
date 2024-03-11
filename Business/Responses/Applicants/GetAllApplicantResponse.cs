@@ -15,7 +15,6 @@ namespace Business.Responses.Applicants
         public DateTime DateOfBirth { get; set; }
         public string NationalIdentity { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
         public string About { get; set; }
     }
 }
